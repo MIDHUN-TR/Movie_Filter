@@ -7,7 +7,7 @@ export default function Page() {
       <div className="w-full max-w-md">
         <div className="bg-slate-900/70 border border-slate-800/80 rounded-3xl shadow-2xl backdrop-blur-md px-8 py-10">
           {/* Header */}
-          <Header />
+          
           <div className="flex flex-col items-center gap-2">
 
             <h1 className="text-2xl font-semibold text-slate-50 mt-2">
