@@ -14,7 +14,7 @@ export default function Modal() {
         onClick={() => setOpen(true)}
         className="text-white rounded-2xl bg-amber-600 px-6 py-2"
       >
-        Add
+        Adds
       </button>
 
       {open && (
