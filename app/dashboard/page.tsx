@@ -52,7 +52,10 @@ export default function Dashboard() {
     <div className="min-h-screen bg-slate-950">
       <Navbar />
       <div className="container mx-auto px-4 py-8">
-        <Header />
+        
+          <Header />
+          
+        
 
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-white mb-6 px-2 border-l-4 border-orange-500">

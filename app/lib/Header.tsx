@@ -1,8 +1,8 @@
-
+import Modal from "./AddButton"
 export default function Header() {
     return (
         <>
-            <div className="w-full py-4 flex justify-center">
+            <div className="w-full py-4 flex justify-between">
                 <div className="relative w-full max-w-md">
                     <svg
                         className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"
@@ -26,6 +26,7 @@ export default function Header() {
                         placeholder="Search your content"
                     />
                 </div>
+                <Modal/>
             </div>
         </>
     )
