@@ -1,15 +1,18 @@
 "use client"
 import { useState } from "react";
-
 export default function Modal() {
   const [open, setOpen] = useState(false);
   const [type, setType] = useState("movie");
 
   const isMovie = type === "movie";
   const isSeriesLike = ["series", "anime", "tv"].includes(type);
-
+ 
+  
   return (
     <>
+    
+
+    
       <button
         onClick={() => setOpen(true)}
         className="text-white rounded-2xl bg-amber-600 px-6 py-2"
@@ -35,34 +38,34 @@ export default function Modal() {
             </select>
 
             {/* COMMON FIELDS */}
-            <input placeholder="Title" className="input" />
-            <input placeholder="Poster Image URL" className="input" />
-            <input placeholder="Genres" className="input" />
-            <input placeholder="Cast" className="input" />
-            <input placeholder="Original Language" className="input" />
-            <input placeholder="Country of Origin" className="input" />
+            <input placeholder="Title" className="w-full border border-gray-300 p-2 rounded-md" />
+            <input placeholder="Poster Image URL" className="w-full border border-gray-300 p-2 rounded-md" />
+            <input placeholder="Genres" className="w-full border border-gray-300 p-2 rounded-md" />
+            <input placeholder="Cast" className="w-full border border-gray-300 p-2 rounded-md" />
+            <input placeholder="Original Language" className="w-full border border-gray-300 p-2 rounded-md" />
+            <input placeholder="Country of Origin" className="w-full border border-gray-300 p-2 rounded-md" />
 
             {/* MOVIE ONLY */}
             {isMovie && (
               <>
-                <input type="date" className="input" />
-                <input placeholder="Runtime (minutes)" className="input" />
+                <input type="date" className="w-full border border-gray-300 p-2 rounded-md" />
+                <input placeholder="Runtime (minutes)" className="w-full border border-gray-300 p-2 rounded-md" />
               </>
             )}
 
             {/* SERIES / ANIME / TV */}
             {isSeriesLike && (
               <>
-                <input placeholder="No. of Seasons" className="input" />
-                <input placeholder="No. of Episodes" className="input" />
+                <input placeholder="No. of Seasons" className="w-full border border-gray-300 p-2 rounded-md" />
+                <input placeholder="No. of Episodes" className="w-full border border-gray-300 p-2 rounded-md" />
                 <input
-                  placeholder="Watched Episodes"
-                  className="input"
+                  placeholder="Watching Episode"
+                  className="w-full border border-gray-300 p-2 rounded-md"
                   disabled
                 />
                 <input
                   placeholder="Completed"
-                  className="input"
+                  className="w-full border border-gray-300 p-2 rounded-md"
                   disabled
                 />
               </>
