@@ -1,6 +1,6 @@
-import Navbar from "../lib/navbar";
-import Header from "../lib/Header";
-import Card from "../lib/Card";
+import Navbar from "../utilities/navbar";
+import Header from "../utilities/Header";
+import Card from "../utilities/Card";
 
 const movies = [
   {
