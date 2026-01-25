@@ -9,7 +9,7 @@ export enum ContentType {
     MOVIE = "movie",
     SERIES = "series",
     ANIME = "anime",
-    TV_SHOW = "tv_show",
+    TV_SHOW = "tv",
 }
 
 // TypeScript interface for Content (without mongoose Document)
