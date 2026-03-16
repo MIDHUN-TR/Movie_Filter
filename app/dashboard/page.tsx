@@ -128,7 +128,7 @@ const contentList = [
   {
     id: 9,
     title: "Walking Dead",
-    posterImage: "https://image.tmdb.org/t/p/w500/u3bZgnGQ9T01sWNhyveQz0wH0Hl.jpg",
+    posterImage: "https://www.themoviedb.org/tv/1402-the-walking-dead",
     genres: ["Action", "Survival", "Drama"],
     cast: ["Emilia Clarke", "Kit Harington", "Peter Dinklage"],
     originalLanguage: "English",
