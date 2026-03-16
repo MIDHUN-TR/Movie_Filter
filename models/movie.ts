@@ -5,6 +5,24 @@ import type { IContentBase } from "@/types/content";
 // TypeScript interface for the Content document (extends mongoose Document)
 export interface IContent extends IContentBase, Document { }
 
+const seasonSchema = new Schema({
+    seasonNumber: {
+        type: Number,
+        required: true,
+        min: [1, "Season number must be at least 1"],
+    },
+    numberOfEpisodes: {
+        type: Number,
+        required: true,
+        min: [1, "Number of episodes must be at least 1"],
+    },
+    watchedEpisodes: {
+        type: Number,
+        default: 0,
+        min: [0, "Watched episodes cannot be negative"],
+    },
+}, { _id: false });
+
 const contentSchema = new Schema<IContent>(
     {
         title: {
@@ -72,17 +90,9 @@ const contentSchema = new Schema<IContent>(
                 return this.type !== ContentType.MOVIE;
             },
         },
-        numberOfEpisodes: {
-            type: Number,
-            min: [1, "Number of episodes must be at least 1"],
-            required: function (this: IContent) {
-                return this.type !== ContentType.MOVIE;
-            },
-        },
-        watchedEpisodes: {
-            type: Number,
-            min: [0, "Watched episodes cannot be negative"],
-            default: 0,
+        seasons: {
+            type: [seasonSchema],
+            default: [],
         },
         completed: {
             type: Boolean,

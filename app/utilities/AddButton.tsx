@@ -23,8 +23,15 @@ export default function AddContentModal() {
   const [runtime, setRuntime] = useState("");
 
   // Series specific
-  const [numberOfSeasons, setNumberOfSeasons] = useState("");
-  const [numberOfEpisodes, setNumberOfEpisodes] = useState("");
+  const [seasonEpisodes, setSeasonEpisodes] = useState<number[]>([]);
+
+  const addSeason = () => {
+    setSeasonEpisodes(prev => [...prev, 1]); // Default 1 episode
+  };
+
+  const removeSeason = () => {
+    setSeasonEpisodes(prev => prev.slice(0, -1)); // Remove last season
+  };
 
   const isMovie = type === "movie";
   const isSeriesLike = ["series", "anime", "tv"].includes(type);
@@ -39,8 +46,8 @@ export default function AddContentModal() {
     setWatchingState("pending");
     setReleaseDate("");
     setRuntime("");
-    setNumberOfSeasons("");
-    setNumberOfEpisodes("");
+    setRuntime("");
+    setSeasonEpisodes([]);
     setError("");
   };
 
@@ -63,9 +70,13 @@ export default function AddContentModal() {
       if (isMovie) {
         payload.releaseDate = releaseDate;
         payload.runtime = Number(runtime);
-      } else {
-        payload.numberOfSeasons = Number(numberOfSeasons);
-        payload.numberOfEpisodes = Number(numberOfEpisodes);
+      } else if (isSeriesLike) {
+        payload.numberOfSeasons = seasonEpisodes.length;
+        payload.seasons = seasonEpisodes.map((episodes, index) => ({
+            seasonNumber: index + 1,
+            numberOfEpisodes: episodes || 1,
+            watchedEpisodes: 0
+        }));
       }
 
       const res = await fetch("/api/movies", {
@@ -257,21 +268,54 @@ export default function AddContentModal() {
 
               {/* Series/Anime/TV Fields */}
               {isSeriesLike && (
-                <div className="grid grid-cols-2 gap-3 animate-[fadeIn_0.2s_ease-out]">
-                  <input
-                    type="number"
-                    placeholder="No. of Seasons"
-                    value={numberOfSeasons}
-                    onChange={(e) => setNumberOfSeasons(e.target.value)}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
-                  />
-                  <input
-                    type="number"
-                    placeholder="No. of Episodes"
-                    value={numberOfEpisodes}
-                    onChange={(e) => setNumberOfEpisodes(e.target.value)}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
-                  />
+                <div className="space-y-4 animate-[fadeIn_0.2s_ease-out]">
+                  <div className="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5">
+                    <div>
+                      <h4 className="text-white font-medium">Seasons ({seasonEpisodes.length})</h4>
+                      <p className="text-xs text-slate-400">Add or remove seasons manually</p>
+                    </div>
+                    <div className="flex gap-2">
+                       <button
+                        type="button"
+                        onClick={removeSeason}
+                        disabled={seasonEpisodes.length === 0}
+                        className="p-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        title="Remove Last Season"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={addSeason}
+                        className="p-2 rounded-lg bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors"
+                        title="Add Season"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {seasonEpisodes.length > 0 && (
+                    <div className="grid grid-cols-2 gap-3 pl-4 border-l-2 border-white/5 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                      {seasonEpisodes.map((episodes, idx) => (
+                        <div key={`season-${idx}`} className="relative">
+                           <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#1a1f2e] px-1 rounded">Season {idx + 1}</label>
+                           <input
+                             type="number"
+                             placeholder="Episodes"
+                             value={episodes || ""}
+                             onChange={(e) => {
+                               const val = parseInt(e.target.value, 10);
+                               const newEps = [...seasonEpisodes];
+                               newEps[idx] = isNaN(val) ? 0 : val;
+                               setSeasonEpisodes(newEps);
+                             }}
+                             className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20"
+                           />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 

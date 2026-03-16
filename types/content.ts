@@ -12,6 +12,13 @@ export enum ContentType {
     TV_SHOW = "tv",
 }
 
+// Interface for per-season episode tracking
+export interface ISeason {
+    seasonNumber: number;
+    numberOfEpisodes: number;
+    watchedEpisodes: number;
+}
+
 // TypeScript interface for Content (without mongoose Document)
 export interface IContentBase {
     title: string;
@@ -29,8 +36,7 @@ export interface IContentBase {
 
     // Series/Anime/TV Show specific fields
     numberOfSeasons?: number;
-    numberOfEpisodes?: number;
-    watchedEpisodes?: number;
+    seasons?: ISeason[];
     completed?: boolean;
 
     createdAt?: Date;
