@@ -40,6 +40,7 @@ export async function POST(request: Request) {
     try {
         await connectDB();
         const body = await request.json();
+        console.log("RECEIVED MOVIE PAYLOAD: ", JSON.stringify(body, null, 2));
         const movie = await Content.create(body);
         return NextResponse.json({ success: true, data: movie }, { status: 201 });
     } catch (error: any) {

@@ -11,6 +11,10 @@ const seasonSchema = new Schema({
         required: true,
         min: [1, "Season number must be at least 1"],
     },
+    name: {
+        type: String,
+        trim: true,
+    },
     numberOfEpisodes: {
         type: Number,
         required: true,

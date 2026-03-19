@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ImageUpload from "./ImageUpload";
 
 export default function AddContentModal() {
   const router = useRouter();
@@ -23,10 +24,10 @@ export default function AddContentModal() {
   const [runtime, setRuntime] = useState("");
 
   // Series specific
-  const [seasonEpisodes, setSeasonEpisodes] = useState<number[]>([]);
+  const [seasonEpisodes, setSeasonEpisodes] = useState<{ episodes: number; name: string }[]>([]);
 
   const addSeason = () => {
-    setSeasonEpisodes(prev => [...prev, 1]); // Default 1 episode
+    setSeasonEpisodes(prev => [...prev, { episodes: 1, name: "" }]); // Default 1 episode, empty name
   };
 
   const removeSeason = () => {
@@ -72,9 +73,10 @@ export default function AddContentModal() {
         payload.runtime = Number(runtime);
       } else if (isSeriesLike) {
         payload.numberOfSeasons = seasonEpisodes.length;
-        payload.seasons = seasonEpisodes.map((episodes, index) => ({
+        payload.seasons = seasonEpisodes.map((seasonData, index) => ({
             seasonNumber: index + 1,
-            numberOfEpisodes: episodes || 1,
+            name: type === "anime" && seasonData.name.trim() !== "" ? seasonData.name.trim() : undefined,
+            numberOfEpisodes: seasonData.episodes || 1,
             watchedEpisodes: 0
         }));
       }
@@ -201,12 +203,9 @@ export default function AddContentModal() {
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
                 />
-                <input
-                  type="text"
-                  placeholder="Poster Image URL"
+                <ImageUpload
                   value={posterImage}
-                  onChange={(e) => setPosterImage(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                  onChange={(url) => setPosterImage(url)}
                 />
                 <div className="grid grid-cols-2 gap-3">
                   <input
@@ -296,22 +295,41 @@ export default function AddContentModal() {
                   </div>
                   
                   {seasonEpisodes.length > 0 && (
-                    <div className="grid grid-cols-2 gap-3 pl-4 border-l-2 border-white/5 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-                      {seasonEpisodes.map((episodes, idx) => (
-                        <div key={`season-${idx}`} className="relative">
-                           <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#1a1f2e] px-1 rounded">Season {idx + 1}</label>
-                           <input
-                             type="number"
-                             placeholder="Episodes"
-                             value={episodes || ""}
-                             onChange={(e) => {
-                               const val = parseInt(e.target.value, 10);
-                               const newEps = [...seasonEpisodes];
-                               newEps[idx] = isNaN(val) ? 0 : val;
-                               setSeasonEpisodes(newEps);
-                             }}
-                             className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20"
-                           />
+                    <div className="grid grid-cols-1 gap-4 pl-4 border-l-2 border-white/5 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                      {seasonEpisodes.map((season, idx) => (
+                        <div key={`season-${idx}`} className={`grid gap-3 ${type === "anime" ? "grid-cols-2" : "grid-cols-1"}`}>
+                           {type === "anime" && (
+                               <div className="relative">
+                                   <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#1a1f2e] px-1 rounded">Season {idx + 1} Name</label>
+                                   <input
+                                     type="text"
+                                     placeholder="e.g. Final Season Part 2"
+                                     value={season.name}
+                                     onChange={(e) => {
+                                       const newEps = [...seasonEpisodes];
+                                       newEps[idx].name = e.target.value;
+                                       setSeasonEpisodes(newEps);
+                                     }}
+                                     className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20"
+                                   />
+                               </div>
+                           )}
+                           
+                           <div className="relative">
+                               <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#1a1f2e] px-1 rounded">{type === "anime" ? "Episodes" : `Season ${idx + 1}`}</label>
+                               <input
+                                 type="number"
+                                 placeholder="Episodes"
+                                 value={season.episodes || ""}
+                                 onChange={(e) => {
+                                   const val = parseInt(e.target.value, 10);
+                                   const newEps = [...seasonEpisodes];
+                                   newEps[idx].episodes = isNaN(val) ? 0 : val;
+                                   setSeasonEpisodes(newEps);
+                                 }}
+                                 className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20"
+                               />
+                           </div>
                         </div>
                       ))}
                     </div>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Content from "@/models/movie";
+import { deleteCloudinaryImage } from "@/lib/cloudinary";
 
 export async function GET(
     request: Request,
@@ -36,6 +37,8 @@ export async function PUT(
         const { id } = await params;
         const body = await request.json();
 
+        const existingMovie = await Content.findById(id);
+
         const movie = await Content.findByIdAndUpdate(id, body, {
             new: true,
             runValidators: true,
@@ -46,6 +49,10 @@ export async function PUT(
                 { success: false, error: "Movie not found" },
                 { status: 404 }
             );
+        }
+
+        if (existingMovie && existingMovie.posterImage && existingMovie.posterImage !== movie.posterImage) {
+            await deleteCloudinaryImage(existingMovie.posterImage);
         }
 
         return NextResponse.json({ success: true, data: movie });
@@ -71,6 +78,10 @@ export async function DELETE(
                 { success: false, error: "Movie not found" },
                 { status: 404 }
             );
+        }
+
+        if (movie.posterImage) {
+            await deleteCloudinaryImage(movie.posterImage);
         }
 
         return NextResponse.json({ success: true, data: {} });

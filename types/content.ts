@@ -15,6 +15,7 @@ export enum ContentType {
 // Interface for per-season episode tracking
 export interface ISeason {
     seasonNumber: number;
+    name?: string;
     numberOfEpisodes: number;
     watchedEpisodes: number;
 }

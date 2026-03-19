@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { WatchingState, ContentType, ISeason } from "@/types/content";
+import ImageUpload from "./ImageUpload";
 
 interface CardProps {
     id: string;
@@ -137,7 +138,7 @@ export default function Card({
     const addSeason = () => {
         setEditSeasonsList(prev => [
             ...prev,
-            { seasonNumber: prev.length + 1, numberOfEpisodes: 1, watchedEpisodes: 0 }
+            { seasonNumber: prev.length + 1, name: "", numberOfEpisodes: 1, watchedEpisodes: 0 }
         ]);
     };
 
@@ -158,9 +159,12 @@ export default function Card({
         setEditRuntime(runtime?.toString() || "");
         setEditSeasonsList(seasons || []);
     }, [
-        title, posterImage, genres, cast, originalLanguage,
+        title, posterImage, originalLanguage,
         countryOfOrigin, watchingState, releaseDate, runtime,
-        numberOfSeasons, seasons
+        numberOfSeasons,
+        JSON.stringify(genres),
+        JSON.stringify(cast),
+        JSON.stringify(seasons)
     ]);
 
     const handleEdit = async () => {
@@ -185,7 +189,13 @@ export default function Card({
                 const totalEp = editSeasonsList.reduce((acc, s) => acc + s.numberOfEpisodes, 0);
                 const watchedEp = editSeasonsList.reduce((acc, s) => acc + s.watchedEpisodes, 0);
                 payload.numberOfSeasons = editSeasonsList.length;
-                payload.seasons = editSeasonsList;
+                payload.seasons = editSeasonsList.map(season => {
+                    const s = season as any;
+                    return {
+                        ...season,
+                        name: type === "anime" && s.name && s.name.trim() !== "" ? s.name.trim() : undefined
+                    };
+                });
                 payload.completed = totalEp > 0 && watchedEp >= totalEp;
                 // Auto-derive watching state based on progress
                 payload.watchingState = (totalEp > 0 && watchedEp >= totalEp)
@@ -319,7 +329,7 @@ export default function Card({
                                     <span className="text-slate-500">🎬</span>
                                     <span>
                                         {activeSeason 
-                                            ? `S${activeSeason.seasonNumber} • Ep ${activeSeason.watchedEpisodes}/${activeSeason.numberOfEpisodes}` 
+                                            ? `${activeSeason.name ? activeSeason.name : `S${activeSeason.seasonNumber}`} • Ep ${activeSeason.watchedEpisodes}/${activeSeason.numberOfEpisodes}` 
                                             : `${totalEpisodes} Episodes`}
                                     </span>
                                 </div>
@@ -418,12 +428,9 @@ export default function Card({
                                     onChange={(e) => setEditTitle(e.target.value)}
                                     className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
                                 />
-                                <input
-                                    type="text"
-                                    placeholder="Poster Image URL"
+                                <ImageUpload
                                     value={editPosterImage}
-                                    onChange={(e) => setEditPosterImage(e.target.value)}
-                                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                                    onChange={(url) => setEditPosterImage(url)}
                                 />
                                 <div className="grid grid-cols-2 gap-3">
                                     <input
@@ -515,8 +522,26 @@ export default function Card({
                                     {editSeasonsList.length > 0 && (
                                         <div className="space-y-3 pl-4 border-l-2 border-white/5 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                                             {editSeasonsList.map((season, idx) => (
-                                                <div key={`edit-season-${idx}`} className="grid grid-cols-2 gap-3 items-center bg-white/5 p-3 rounded-xl border border-white/5">
+                                                <div key={`edit-season-${idx}`} className={`grid gap-3 items-center bg-white/5 p-3 rounded-xl border border-white/5 ${type === "anime" ? "grid-cols-2" : "grid-cols-2"}`}>
                                                     <span className="col-span-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Season {season.seasonNumber}</span>
+                                                    
+                                                    {type === "anime" && (
+                                                        <div className="col-span-2 relative mb-2">
+                                                            <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#1a1f2e] px-1 rounded">Name</label>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="e.g. Final Season Part 1"
+                                                                value={(season as any).name || ""}
+                                                                onChange={(e) => {
+                                                                    const newList = [...editSeasonsList];
+                                                                    (newList[idx] as any).name = e.target.value;
+                                                                    setEditSeasonsList(newList);
+                                                                }}
+                                                                className="w-full rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm text-white outline-none transition-all duration-200 focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20"
+                                                            />
+                                                        </div>
+                                                    )}
+                                                    
                                                     <div className="relative">
                                                         <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#1a1f2e] px-1 rounded">Total Eps</label>
                                                         <input
