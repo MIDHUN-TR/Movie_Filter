@@ -51,15 +51,15 @@ function getWatchingStateStyle(state: WatchingState): { bg: string; text: string
 function getTypeBadgeColor(type: ContentType): string {
     switch (type) {
         case ContentType.MOVIE:
-            return "bg-purple-500";
+            return "bg-[#3A0CA3]";
         case ContentType.SERIES:
-            return "bg-blue-500";
+            return "bg-[#3A0CA3]";
         case ContentType.ANIME:
-            return "bg-pink-500";
+            return "bg-[#3A0CA3]";
         case ContentType.TV_SHOW:
-            return "bg-teal-500";
+            return "bg-[#3A0CA3]";
         default:
-            return "bg-slate-500";
+            return "bg-slate-800";
     }
 }
 
@@ -97,7 +97,7 @@ export default function Card({
 }: CardProps) {
     const router = useRouter();
     const isMovie = type === ContentType.MOVIE;
-    
+
     // Aggregations from seasons
     const totalEpisodes = seasons?.reduce((sum, s) => sum + s.numberOfEpisodes, 0) || 0;
     const totalWatched = seasons?.reduce((sum, s) => sum + s.watchedEpisodes, 0) || 0;
@@ -193,7 +193,7 @@ export default function Card({
                     const s = season as any;
                     return {
                         ...season,
-                        name: type === "anime" && s.name && s.name.trim() !== "" ? s.name.trim() : undefined
+                        name: (s.name && s.name.trim() !== "") ? s.name.trim() : ""
                     };
                 });
                 payload.completed = totalEp > 0 && watchedEp >= totalEp;
@@ -240,7 +240,7 @@ export default function Card({
         }
     };
 
-    
+
     // Find current active season
     const activeSeason = seasons?.find(s => s.watchedEpisodes < s.numberOfEpisodes) || seasons?.[seasons.length - 1];
 
@@ -249,9 +249,9 @@ export default function Card({
 
     return (
         <>
-            <div className="group relative overflow-hidden rounded-2xl bg-slate-900/40 border border-slate-800/50 transition-all duration-300 hover:bg-slate-800/60 hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-1">
+            <div className="group relative overflow-hidden rounded-2xl bg-[#0a0a0a] border border-white/5 transition-all duration-300 hover:bg-[#111111] hover:shadow-2xl hover:shadow-[#3A0CA3]/20 hover:-translate-y-1">
                 {/* Poster Image */}
-                <div className="relative h-72 w-full overflow-hidden bg-slate-800">
+                <div className="relative h-72 w-full overflow-hidden bg-[#050505]">
                     {posterImage ? (
                         <Image
                             src={posterImage}
@@ -266,7 +266,7 @@ export default function Card({
                     )}
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/50 to-transparent" />
 
                     {/* Type Badge */}
                     <div className={`absolute top-3 left-3 rounded-full ${getTypeBadgeColor(type)} px-3 py-1 text-xs font-bold text-white shadow-lg`}>
@@ -277,7 +277,6 @@ export default function Card({
                     <div className={`absolute top-3 right-3 rounded-full ${watchingStyle.bg} ${watchingStyle.text} px-3 py-1 text-xs font-bold backdrop-blur-sm`}>
                         {displayState.charAt(0).toUpperCase() + displayState.slice(1)}
                     </div>
-
                     {/* Title on Image */}
                     <div className="absolute bottom-3 left-3 right-3">
                         <h3 className="text-xl font-bold text-white drop-shadow-lg line-clamp-2">
@@ -293,13 +292,12 @@ export default function Card({
                         {genres.slice(0, 3).map((genre, index) => (
                             <span
                                 key={index}
-                                className="rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-300"
+                                className="rounded-full bg-white/5 px-2 py-0.5 text-xs text-slate-300"
                             >
                                 {genre}
                             </span>
                         ))}
                     </div>
-
                     {/* Type-specific info */}
                     {isMovie ? (
                         // Movie-specific display
@@ -328,8 +326,8 @@ export default function Card({
                                 <div className="flex items-center gap-2">
                                     <span className="text-slate-500">🎬</span>
                                     <span>
-                                        {activeSeason 
-                                            ? `${activeSeason.name ? activeSeason.name : `S${activeSeason.seasonNumber}`} • Ep ${activeSeason.watchedEpisodes}/${activeSeason.numberOfEpisodes}` 
+                                        {activeSeason
+                                            ? `${activeSeason.seasonNumber ? `S${activeSeason.seasonNumber}` : activeSeason.name} • Ep ${activeSeason.watchedEpisodes}/${activeSeason.numberOfEpisodes}`
                                             : `${totalEpisodes} Episodes`}
                                     </span>
                                 </div>
@@ -341,16 +339,15 @@ export default function Card({
                                     <span>Progress: {totalWatched}/{totalEpisodes}</span>
                                     <span>{completed ? "✅ Completed" : `${progress}%`}</span>
                                 </div>
-                                <div className="h-1.5 rounded-full bg-slate-800 overflow-hidden">
+                                <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
                                     <div
-                                        className={`h-full rounded-full transition-all duration-300 ${completed ? "bg-green-500" : "bg-orange-500"}`}
+                                        className={`h-full rounded-full transition-all duration-300 ${completed ? "bg-[#3A0CA3]" : "bg-[#3A0CA3]/50"}`}
                                         style={{ width: `${completed ? 100 : progress}%` }}
                                     />
                                 </div>
                             </div>
                         </div>
                     )}
-
                     {/* Language & Country */}
                     <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
                         <span>🌐 {originalLanguage}</span>
@@ -370,13 +367,13 @@ export default function Card({
                 <div className="px-4 pb-4 flex items-center gap-2">
                     <button
                         onClick={() => setEditOpen(true)}
-                        className="flex-1 rounded-lg bg-white/5 px-3 py-2 text-xs font-medium text-slate-300 transition-colors hover:bg-white/10 hover:text-white"
+                        className="flex-1 rounded-lg bg-[#3A0CA3]/20 px-3 py-2 text-xs font-medium text-[#3A0CA3] transition-colors hover:bg-[#3A0CA3] hover:text-white"
                     >
                         ✏️ Edit
                     </button>
                     <button
                         onClick={() => setDeleteOpen(true)}
-                        className="flex-1 rounded-lg bg-white/5 px-3 py-2 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/10 hover:text-red-300"
+                        className="flex-1 rounded-lg bg-red-500/10 px-3 py-2 text-xs font-medium text-red-400 transition-colors hover:bg-red-500/20 hover:text-white"
                     >
                         🗑️ Delete
                     </button>
@@ -390,11 +387,11 @@ export default function Card({
                     onClick={() => setEditOpen(false)}
                 >
                     <div
-                        className="relative mx-4 w-full max-w-lg animate-[slideUp_0.3s_ease-out] rounded-3xl border border-white/10 bg-slate-900/95 p-8 shadow-2xl backdrop-blur-xl max-h-[90vh] overflow-y-auto"
+                        className="relative mx-4 w-full max-w-lg animate-[slideUp_0.3s_ease-out] rounded-3xl border border-white/10 bg-[#0a0a0a]/95 p-8 shadow-2xl backdrop-blur-xl max-h-[90vh] overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Decorative gradient */}
-                        <div className="absolute -top-px left-20 right-20 h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent" />
+                        <div className="absolute -top-px left-20 right-20 h-px bg-gradient-to-r from-transparent via-[#3A0CA3] to-transparent" />
 
                         {/* Close Button */}
                         <button
@@ -426,7 +423,7 @@ export default function Card({
                                     placeholder="Title"
                                     value={editTitle}
                                     onChange={(e) => setEditTitle(e.target.value)}
-                                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                                 />
                                 <ImageUpload
                                     value={editPosterImage}
@@ -438,14 +435,14 @@ export default function Card({
                                         placeholder="Genres (comma separated)"
                                         value={editGenres}
                                         onChange={(e) => setEditGenres(e.target.value)}
-                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                                     />
                                     <input
                                         type="text"
                                         placeholder="Cast (comma separated)"
                                         value={editCast}
                                         onChange={(e) => setEditCast(e.target.value)}
-                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                                     />
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
@@ -454,14 +451,14 @@ export default function Card({
                                         placeholder="Original Language"
                                         value={editLanguage}
                                         onChange={(e) => setEditLanguage(e.target.value)}
-                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                                     />
                                     <input
                                         type="text"
                                         placeholder="Country of Origin"
                                         value={editCountry}
                                         onChange={(e) => setEditCountry(e.target.value)}
-                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                                     />
                                 </div>
                             </div>
@@ -477,7 +474,7 @@ export default function Card({
                                             type="date"
                                             value={editReleaseDate}
                                             onChange={(e) => setEditReleaseDate(e.target.value)}
-                                            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                                            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                                         />
                                     </div>
                                     <input
@@ -485,7 +482,7 @@ export default function Card({
                                         placeholder="Runtime (minutes)"
                                         value={editRuntime}
                                         onChange={(e) => setEditRuntime(e.target.value)}
-                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                                        className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                                     />
                                 </div>
                             )}
@@ -518,13 +515,13 @@ export default function Card({
                                             </button>
                                         </div>
                                     </div>
-                                    
+
                                     {editSeasonsList.length > 0 && (
                                         <div className="space-y-3 pl-4 border-l-2 border-white/5 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                                             {editSeasonsList.map((season, idx) => (
                                                 <div key={`edit-season-${idx}`} className={`grid gap-3 items-center bg-white/5 p-3 rounded-xl border border-white/5 ${type === "anime" ? "grid-cols-2" : "grid-cols-2"}`}>
                                                     <span className="col-span-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Season {season.seasonNumber}</span>
-                                                    
+
                                                     {type === "anime" && (
                                                         <div className="col-span-2 relative mb-2">
                                                             <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#1a1f2e] px-1 rounded">Name</label>
@@ -537,11 +534,11 @@ export default function Card({
                                                                     (newList[idx] as any).name = e.target.value;
                                                                     setEditSeasonsList(newList);
                                                                 }}
-                                                                className="w-full rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm text-white outline-none transition-all duration-200 focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20"
+                                                                className="w-full rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm text-white outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:ring-1 focus:ring-[#3A0CA3]/20"
                                                             />
                                                         </div>
                                                     )}
-                                                    
+
                                                     <div className="relative">
                                                         <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#1a1f2e] px-1 rounded">Total Eps</label>
                                                         <input
@@ -553,7 +550,7 @@ export default function Card({
                                                                 newList[idx].numberOfEpisodes = isNaN(val) ? 0 : val;
                                                                 setEditSeasonsList(newList);
                                                             }}
-                                                            className="w-full rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm text-white outline-none transition-all duration-200 focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20"
+                                                            className="w-full rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm text-white outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:ring-1 focus:ring-[#3A0CA3]/20"
                                                         />
                                                     </div>
                                                     <div className="relative">
@@ -567,7 +564,7 @@ export default function Card({
                                                                 newList[idx].watchedEpisodes = isNaN(val) ? 0 : val;
                                                                 setEditSeasonsList(newList);
                                                             }}
-                                                            className="w-full rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm text-white outline-none transition-all duration-200 focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20"
+                                                            className="w-full rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm text-white outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:ring-1 focus:ring-[#3A0CA3]/20"
                                                         />
                                                     </div>
                                                 </div>
@@ -581,7 +578,7 @@ export default function Card({
                             <select
                                 value={editWatchingState}
                                 onChange={(e) => setEditWatchingState(e.target.value as WatchingState)}
-                                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20 appearance-none cursor-pointer"
+                                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20 appearance-none cursor-pointer"
                             >
                                 <option value="pending" className="bg-slate-900">Pending</option>
                                 <option value="watching" className="bg-slate-900">Watching</option>
@@ -600,7 +597,7 @@ export default function Card({
                             <button
                                 onClick={handleEdit}
                                 disabled={loading}
-                                className="rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-2.5 font-semibold text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-orange-500/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="rounded-xl bg-[#3A0CA3] px-6 py-2.5 font-semibold text-white shadow-lg shadow-[#3A0CA3]/25 transition-all duration-200 hover:shadow-xl hover:shadow-[#3A0CA3]/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {loading ? "Saving..." : "Save Changes"}
                             </button>
@@ -625,12 +622,12 @@ export default function Card({
             {/* Delete Confirmation Modal */}
             {deleteOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div 
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
-                        onClick={() => !loading && setDeleteOpen(false)} 
+                    <div
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+                        onClick={() => !loading && setDeleteOpen(false)}
                     />
-                    
-                    <div className="relative w-full max-w-sm overflow-hidden rounded-2xl bg-[#0f111a] p-6 shadow-2xl border border-white/5 animate-[scaleIn_0.2s_ease-out]">
+
+                    <div className="relative w-full max-w-sm overflow-hidden rounded-2xl bg-[#0a0a0a] p-6 shadow-2xl border border-white/5 animate-[scaleIn_0.2s_ease-out]">
                         <div className="text-center">
                             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 mb-4">
                                 <span className="text-3xl">🗑️</span>
@@ -639,7 +636,7 @@ export default function Card({
                             <p className="text-slate-400 text-sm mb-6">
                                 Are you sure you want to delete <span className="text-white font-medium">"{title}"</span>? This action cannot be undone.
                             </p>
-                            
+
                             {error && (
                                 <div className="mb-4 rounded-xl bg-red-500/10 p-3 text-sm text-red-400 border border-red-500/20">
                                     {error}

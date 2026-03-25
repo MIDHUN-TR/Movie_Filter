@@ -8,11 +8,11 @@ export default function Header() {
                 {/* Search Bar */}
                 <div className="relative w-full max-w-xl group">
                     {/* Glow effect on focus */}
-                    <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 opacity-0 blur transition-all duration-300 group-focus-within:opacity-30" />
+                    <div className="absolute -inset-0.5 rounded-2xl bg-[#3A0CA3] opacity-0 blur-md transition-all duration-300 group-focus-within:opacity-40" />
 
                     <div className="relative flex items-center">
                         <svg
-                            className="absolute left-4 h-5 w-5 text-slate-400 transition-colors duration-200 group-focus-within:text-orange-400"
+                            className="absolute left-4 h-5 w-5 text-slate-400 transition-colors duration-200 group-focus-within:text-[#3A0CA3]"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
@@ -29,7 +29,7 @@ export default function Header() {
                             type="search"
                             name="search"
                             id="search"
-                            className="h-14 w-full rounded-2xl border border-white/10 bg-white/5 pl-12 pr-4 text-white backdrop-blur-sm placeholder:text-slate-500 transition-all duration-300 focus:border-orange-500/50 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+                            className="h-14 w-full rounded-2xl border border-white/5 bg-[#050505] pl-12 pr-4 text-white backdrop-blur-sm placeholder:text-slate-500 transition-all duration-300 focus:border-[#3A0CA3]/50 focus:bg-[#050505] focus:outline-none focus:ring-2 focus:ring-[#3A0CA3]/30"
                             placeholder="Search movies, series, anime..."
                         />
                         {/* Keyboard shortcut hint */}

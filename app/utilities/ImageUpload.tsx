@@ -99,7 +99,7 @@ export default function ImageUpload({ value, onChange, className = "" }: ImageUp
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     disabled={uploading}
-                    className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20 disabled:opacity-50"
+                    className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20 disabled:opacity-50"
                 />
 
                 {/* Cloud Upload button (for URLs) */}
@@ -109,7 +109,7 @@ export default function ImageUpload({ value, onChange, className = "" }: ImageUp
                         onClick={handleUrlUpload}
                         disabled={uploading}
                         title="Upload this URL to Cloudinary"
-                        className="flex items-center justify-center rounded-xl bg-orange-500/20 text-orange-400 px-4 py-3 transition-all duration-200 hover:bg-orange-500/30 hover:text-orange-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center justify-center rounded-xl bg-[#3A0CA3]/20 text-white px-4 py-3 transition-all duration-200 hover:bg-[#3A0CA3]/40 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
@@ -126,7 +126,7 @@ export default function ImageUpload({ value, onChange, className = "" }: ImageUp
                 >
                     {uploading ? (
                         <>
-                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-400/30 border-t-orange-500" />
+                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-400/30 border-t-[#3A0CA3]" />
                             <span>Uploading...</span>
                         </>
                     ) : (

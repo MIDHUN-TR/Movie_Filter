@@ -75,7 +75,7 @@ export default function AddContentModal() {
         payload.numberOfSeasons = seasonEpisodes.length;
         payload.seasons = seasonEpisodes.map((seasonData, index) => ({
             seasonNumber: index + 1,
-            name: type === "anime" && seasonData.name.trim() !== "" ? seasonData.name.trim() : undefined,
+            name: seasonData.name.trim() !== "" ? seasonData.name.trim() : "",
             numberOfEpisodes: seasonData.episodes || 1,
             watchedEpisodes: 0
         }));
@@ -110,7 +110,7 @@ export default function AddContentModal() {
       {/* Modern Floating Add Button - Orange Theme */}
       <button
         onClick={() => setOpen(true)}
-        className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-3.5 font-semibold text-white shadow-lg shadow-orange-500/25 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-orange-500/30 active:scale-95"
+        className="group relative overflow-hidden rounded-2xl bg-[#3A0CA3] px-6 py-3.5 font-semibold text-white shadow-lg shadow-[#3A0CA3]/25 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-[#3A0CA3]/30 active:scale-95"
       >
         <span className="relative z-10 flex items-center gap-2">
           <svg
@@ -128,7 +128,7 @@ export default function AddContentModal() {
           </svg>
           Add Content
         </span>
-        <div className="absolute inset-0 -z-0 bg-gradient-to-r from-amber-500 to-orange-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="absolute inset-0 -z-0 bg-gradient-to-r from-[#3A0CA3] to-[#25086b] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </button>
 
       {/* Modal Overlay */}
@@ -139,11 +139,11 @@ export default function AddContentModal() {
         >
           {/* Modal Content */}
           <div
-            className="relative mx-4 w-full max-w-lg animate-[slideUp_0.3s_ease-out] rounded-3xl border border-white/10 bg-slate-900/95 p-8 shadow-2xl backdrop-blur-xl max-h-[90vh] overflow-y-auto"
+            className="relative mx-4 w-full max-w-lg animate-[slideUp_0.3s_ease-out] rounded-3xl border border-white/10 bg-[#0a0a0a]/95 p-8 shadow-2xl backdrop-blur-xl max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Decorative gradient */}
-            <div className="absolute -top-px left-20 right-20 h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent" />
+            <div className="absolute -top-px left-20 right-20 h-px bg-gradient-to-r from-transparent via-[#3A0CA3] to-transparent" />
 
             {/* Close Button */}
             <button
@@ -184,7 +184,7 @@ export default function AddContentModal() {
                     key={option.value}
                     onClick={() => setType(option.value)}
                     className={`flex flex-col items-center gap-1 rounded-xl p-3 text-sm font-medium transition-all duration-200 ${type === option.value
-                      ? "bg-gradient-to-br from-orange-500/20 to-amber-500/20 text-white ring-2 ring-orange-500"
+                      ? "bg-[#3A0CA3]/20 text-white ring-2 ring-[#3A0CA3]"
                       : "bg-white/5 text-slate-400 hover:bg-white/10 hover:text-slate-300"
                       }`}
                   >
@@ -201,7 +201,7 @@ export default function AddContentModal() {
                   placeholder="Title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                 />
                 <ImageUpload
                   value={posterImage}
@@ -213,14 +213,14 @@ export default function AddContentModal() {
                     placeholder="Genres (comma separated)"
                     value={genres}
                     onChange={(e) => setGenres(e.target.value)}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                   />
                   <input
                     type="text"
                     placeholder="Cast (comma separated)"
                     value={cast}
                     onChange={(e) => setCast(e.target.value)}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -229,14 +229,14 @@ export default function AddContentModal() {
                     placeholder="Original Language"
                     value={originalLanguage}
                     onChange={(e) => setOriginalLanguage(e.target.value)}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                   />
                   <input
                     type="text"
                     placeholder="Country of Origin"
                     value={countryOfOrigin}
                     onChange={(e) => setCountryOfOrigin(e.target.value)}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                   />
                 </div>
               </div>
@@ -252,7 +252,7 @@ export default function AddContentModal() {
                       type="date"
                       value={releaseDate}
                       onChange={(e) => setReleaseDate(e.target.value)}
-                      className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                      className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                     />
                   </div>
                   <input
@@ -260,7 +260,7 @@ export default function AddContentModal() {
                     placeholder="Runtime (minutes)"
                     value={runtime}
                     onChange={(e) => setRuntime(e.target.value)}
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20"
                   />
                 </div>
               )}
@@ -300,7 +300,7 @@ export default function AddContentModal() {
                         <div key={`season-${idx}`} className={`grid gap-3 ${type === "anime" ? "grid-cols-2" : "grid-cols-1"}`}>
                            {type === "anime" && (
                                <div className="relative">
-                                   <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#1a1f2e] px-1 rounded">Season {idx + 1} Name</label>
+                                   <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#0a0a0a] px-1 rounded">Season {idx + 1} Name</label>
                                    <input
                                      type="text"
                                      placeholder="e.g. Final Season Part 2"
@@ -310,13 +310,13 @@ export default function AddContentModal() {
                                        newEps[idx].name = e.target.value;
                                        setSeasonEpisodes(newEps);
                                      }}
-                                     className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20"
+                                     className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:ring-1 focus:ring-[#3A0CA3]/20"
                                    />
                                </div>
                            )}
                            
                            <div className="relative">
-                               <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#1a1f2e] px-1 rounded">{type === "anime" ? "Episodes" : `Season ${idx + 1}`}</label>
+                               <label className="text-[10px] text-slate-500 absolute -top-2 left-2 bg-[#0a0a0a] px-1 rounded">{type === "anime" ? "Episodes" : `Season ${idx + 1}`}</label>
                                <input
                                  type="number"
                                  placeholder="Episodes"
@@ -327,7 +327,7 @@ export default function AddContentModal() {
                                    newEps[idx].episodes = isNaN(val) ? 0 : val;
                                    setSeasonEpisodes(newEps);
                                  }}
-                                 className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20"
+                                 className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:ring-1 focus:ring-[#3A0CA3]/20"
                                />
                            </div>
                         </div>
@@ -342,7 +342,7 @@ export default function AddContentModal() {
                 <select
                   value={watchingState}
                   onChange={(e) => setWatchingState(e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-orange-500/50 focus:bg-white/10 focus:ring-2 focus:ring-orange-500/20 appearance-none cursor-pointer"
+                  className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-slate-500 outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:bg-white/10 focus:ring-2 focus:ring-[#3A0CA3]/20 appearance-none cursor-pointer"
                 >
                   <option value="pending" className="bg-slate-900">Pending</option>
                   <option value="watching" className="bg-slate-900">Watching</option>
@@ -362,7 +362,7 @@ export default function AddContentModal() {
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 px-6 py-2.5 font-semibold text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:shadow-xl hover:shadow-orange-500/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-xl bg-[#3A0CA3] px-6 py-2.5 font-semibold text-white shadow-lg shadow-[#3A0CA3]/25 transition-all duration-200 hover:shadow-xl hover:shadow-[#3A0CA3]/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Saving..." : "Save Content"}
               </button>
