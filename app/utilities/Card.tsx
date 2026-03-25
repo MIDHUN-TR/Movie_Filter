@@ -341,7 +341,7 @@ export default function Card({
                                 </div>
                                 <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
                                     <div
-                                        className={`h-full rounded-full transition-all duration-300 ${completed ? "bg-[#3A0CA3]" : "bg-[#3A0CA3]/50"}`}
+                                        className={`h-full rounded-full transition-all duration-300 ${completed ? "bg-[#008000]" : "bg-[#f01e2c]"}`}
                                         style={{ width: `${completed ? 100 : progress}%` }}
                                     />
                                 </div>
