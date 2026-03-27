@@ -51,10 +51,22 @@ const stateFilters: FilterTab[] = [
     { label: "Watched", value: WatchingState.WATCHED, icon: "✅" },
 ];
 
-export default function ContentGrid({ contentList }: { contentList: ContentItem[] }) {
+export default function ContentGrid({ contentList, searchQuery = "" }: { contentList: ContentItem[]; searchQuery?: string }) {
     const [activeFilter, setActiveFilter] = useState<FilterValue>("all");
 
-    const filteredList = contentList.filter((item) => {
+    const filteredList = contentList
+        // Search filter — match against title, genres, and cast
+        .filter((item) => {
+            if (!searchQuery.trim()) return true;
+            const q = searchQuery.toLowerCase().trim();
+            return (
+                item.title.toLowerCase().includes(q) ||
+                item.genres.some((g) => g.toLowerCase().includes(q)) ||
+                item.cast.some((c) => c.toLowerCase().includes(q))
+            );
+        })
+        // Type / watching-state filter
+        .filter((item) => {
         if (activeFilter === "all") return true;
 
         // Check if filter matches a content type
@@ -142,7 +154,9 @@ export default function ContentGrid({ contentList }: { contentList: ContentItem[
                     <span className="text-5xl mb-4">🔍</span>
                     <p className="text-lg font-medium text-slate-300">No content found</p>
                     <p className="text-sm text-slate-500 mt-1">
-                        Try selecting a different filter
+                        {searchQuery.trim()
+                            ? `No results for "${searchQuery.trim()}"`
+                            : "Try selecting a different filter"}
                     </p>
                     <button
                         onClick={() => setActiveFilter("all")}

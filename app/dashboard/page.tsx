@@ -1,6 +1,5 @@
 import Navbar from "../utilities/navbar";
-import Header from "../utilities/Header";
-import ContentGrid from "../utilities/ContentGrid";
+import DashboardClient from "./DashboardClient";
 import connectDB from "@/lib/mongodb";
 import Content from "@/models/movie";
 
@@ -33,8 +32,6 @@ export default async function Dashboard() {
       <Navbar />
       <div className="container mx-auto px-4 py-8">
 
-        <Header />
-
         {dbError ? (
           <div className="mt-12 rounded-xl bg-red-500/10 border border-red-500/30 p-6 text-center">
             <p className="text-red-400 text-lg font-semibold">⚠️ Unable to connect to the database</p>
@@ -45,7 +42,7 @@ export default async function Dashboard() {
             <p className="text-slate-400">No movies or series found in your watchlist yet.</p>
           </div>
         ) : (
-          <ContentGrid contentList={contentList} />
+          <DashboardClient contentList={contentList} />
         )}
       </div>
     </div>
