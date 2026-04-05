@@ -245,7 +245,7 @@ export default function Card({
     const activeSeason = seasons?.find(s => s.watchedEpisodes < s.numberOfEpisodes) || seasons?.[seasons.length - 1];
 
     // Calculate progress for series/anime/tv shows based on total watched episode / total no of episodes
-    const progress = totalEpisodes > 0 ? Math.round((totalWatched / totalEpisodes) * 100) : 0;
+    const progress = totalEpisodes > 0 ? parseFloat(((totalWatched / totalEpisodes) * 100).toFixed(1)) : 0;
 
     return (
         <>
