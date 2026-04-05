@@ -40,7 +40,23 @@ export async function POST(request: Request) {
     try {
         await connectDB();
         const body = await request.json();
-        console.log("RECEIVED MOVIE PAYLOAD: ", JSON.stringify(body, null, 2));
+
+        // Duplicate check: case-insensitive title + type match
+        if (body.title && body.type) {
+            const escapedTitle = body.title.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const existing = await Content.findOne({
+                title: { $regex: new RegExp(`^${escapedTitle}$`, "i") },
+                type: body.type,
+            });
+
+            if (existing) {
+                return NextResponse.json(
+                    { success: false, error: `"${body.title}" already exists in your ${body.type} watchlist` },
+                    { status: 409 }
+                );
+            }
+        }
+
         const movie = await Content.create(body);
         return NextResponse.json({ success: true, data: movie }, { status: 201 });
     } catch (error: any) {

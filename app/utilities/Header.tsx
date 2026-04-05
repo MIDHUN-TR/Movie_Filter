@@ -1,5 +1,6 @@
 "use client";
 import Modal from "./AddButton";
+import CsvImport from "./CsvImport";
 
 interface HeaderProps {
     searchQuery: string;
@@ -62,8 +63,11 @@ export default function Header({ searchQuery, onSearchChange }: HeaderProps) {
                     </div>
                 </div>
 
-                {/* Add Button */}
-                <Modal />
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3">
+                    <CsvImport />
+                    <Modal />
+                </div>
             </div>
         </div>
     );
