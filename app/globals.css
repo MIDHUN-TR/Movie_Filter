@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
+body {
+  font-family: var(--font-source-serif), 'Georgia', 'Times New Roman', serif;
+}
 
+code, pre, .font-mono {
+  font-family: var(--font-jetbrains-mono), monospace;
+}
 
 
 
