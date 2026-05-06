@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 
 interface ImageUploadProps {
     value: string;
@@ -48,8 +49,8 @@ export default function ImageUpload({ value, onChange, className = "" }: ImageUp
             }
 
             onChange(data.url);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Upload failed");
         } finally {
             setUploading(false);
             // Reset file input so the same file can be re-selected
@@ -82,8 +83,8 @@ export default function ImageUpload({ value, onChange, className = "" }: ImageUp
             }
 
             onChange(data.url);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Upload failed");
         } finally {
             setUploading(false);
         }
@@ -157,11 +158,14 @@ export default function ImageUpload({ value, onChange, className = "" }: ImageUp
             {/* Thumbnail preview */}
             {value && !uploading && (
                 <div className="flex items-center gap-2">
-                    <img
+                    <Image
                         src={value}
                         alt="Preview"
+                        width={48}
+                        height={48}
                         className="h-12 w-12 rounded-lg object-cover border border-white/10"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                        unoptimized
                     />
                     <span className="text-xs text-slate-500 truncate max-w-[250px]">{value}</span>
                 </div>

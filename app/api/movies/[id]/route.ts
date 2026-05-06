@@ -20,9 +20,9 @@ export async function GET(
         }
 
         return NextResponse.json({ success: true, data: movie });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" },
             { status: 400 }
         );
     }
@@ -56,9 +56,9 @@ export async function PUT(
         }
 
         return NextResponse.json({ success: true, data: movie });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" },
             { status: 400 }
         );
     }
@@ -85,9 +85,9 @@ export async function DELETE(
         }
 
         return NextResponse.json({ success: true, data: {} });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" },
             { status: 400 }
         );
     }

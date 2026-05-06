@@ -11,7 +11,7 @@ export async function GET(request: Request) {
         const watchingState = searchParams.get("watchingState");
         const search = searchParams.get("search");
 
-        const query: any = {};
+        const query: Record<string, unknown> = {};
 
         if (type) {
             query.type = type;
@@ -28,9 +28,9 @@ export async function GET(request: Request) {
         const movies = await Content.find(query).sort({ createdAt: -1 });
 
         return NextResponse.json({ success: true, data: movies });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" },
             { status: 400 }
         );
     }
@@ -59,9 +59,9 @@ export async function POST(request: Request) {
 
         const movie = await Content.create(body);
         return NextResponse.json({ success: true, data: movie }, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" },
             { status: 400 }
         );
     }

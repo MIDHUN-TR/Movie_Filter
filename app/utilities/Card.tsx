@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { WatchingState, ContentType, ISeason } from "@/types/content";
@@ -146,6 +146,11 @@ export default function Card({
         setEditSeasonsList(prev => prev.slice(0, -1));
     };
 
+    // Extract complex expressions for static analysis
+    const genresKey = useMemo(() => JSON.stringify(genres), [genres]);
+    const castKey = useMemo(() => JSON.stringify(cast), [cast]);
+    const seasonsKey = useMemo(() => JSON.stringify(seasons), [seasons]);
+
     // Sync state when props change (e.g. after a router.refresh() following an edit)
     useEffect(() => {
         setEditTitle(title);
@@ -161,10 +166,8 @@ export default function Card({
     }, [
         title, posterImage, originalLanguage,
         countryOfOrigin, watchingState, releaseDate, runtime,
-        numberOfSeasons,
-        JSON.stringify(genres),
-        JSON.stringify(cast),
-        JSON.stringify(seasons)
+        numberOfSeasons, genres, cast, seasons,
+        genresKey, castKey, seasonsKey
     ]);
 
     const handleEdit = async () => {
@@ -172,7 +175,7 @@ export default function Card({
             setLoading(true);
             setError("");
 
-            const payload: any = {
+            const payload: Record<string, unknown> = {
                 title: editTitle,
                 posterImage: editPosterImage,
                 genres: editGenres.split(",").map(g => g.trim()).filter(Boolean),
@@ -189,13 +192,10 @@ export default function Card({
                 const totalEp = editSeasonsList.reduce((acc, s) => acc + s.numberOfEpisodes, 0);
                 const watchedEp = editSeasonsList.reduce((acc, s) => acc + s.watchedEpisodes, 0);
                 payload.numberOfSeasons = editSeasonsList.length;
-                payload.seasons = editSeasonsList.map(season => {
-                    const s = season as any;
-                    return {
-                        ...season,
-                        name: (s.name && s.name.trim() !== "") ? s.name.trim() : ""
-                    };
-                });
+                payload.seasons = editSeasonsList.map(season => ({
+                    ...season,
+                    name: (season.name && season.name.trim() !== "") ? season.name.trim() : ""
+                }));
                 payload.completed = totalEp > 0 && watchedEp >= totalEp;
                 // Auto-derive watching state based on progress
                 payload.watchingState = (totalEp > 0 && watchedEp >= totalEp)
@@ -219,8 +219,8 @@ export default function Card({
 
             setEditOpen(false);
             router.refresh();
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "An unexpected error occurred");
         } finally {
             setLoading(false);
         }
@@ -233,8 +233,8 @@ export default function Card({
             if (!res.ok) throw new Error("Failed to delete content.");
             setDeleteOpen(false);
             router.refresh();
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "An unexpected error occurred");
         } finally {
             setLoading(false);
         }
@@ -528,10 +528,10 @@ export default function Card({
                                                             <input
                                                                 type="text"
                                                                 placeholder="e.g. Final Season Part 1"
-                                                                value={(season as any).name || ""}
+                                                                value={season.name || ""}
                                                                 onChange={(e) => {
                                                                     const newList = [...editSeasonsList];
-                                                                    (newList[idx] as any).name = e.target.value;
+                                                                    newList[idx] = { ...newList[idx], name: e.target.value };
                                                                     setEditSeasonsList(newList);
                                                                 }}
                                                                 className="w-full rounded-lg border border-white/10 bg-transparent px-3 py-2 text-sm text-white outline-none transition-all duration-200 focus:border-[#3A0CA3]/50 focus:ring-1 focus:ring-[#3A0CA3]/20"
@@ -634,7 +634,7 @@ export default function Card({
                             </div>
                             <h3 className="text-xl font-bold text-white mb-2">Delete Content</h3>
                             <p className="text-slate-400 text-sm mb-6">
-                                Are you sure you want to delete <span className="text-white font-medium">"{title}"</span>? This action cannot be undone.
+                                Are you sure you want to delete <span className="text-white font-medium">&ldquo;{title}&rdquo;</span>? This action cannot be undone.
                             </p>
 
                             {error && (
