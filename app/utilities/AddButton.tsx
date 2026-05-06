@@ -57,7 +57,7 @@ export default function AddContentModal() {
       setLoading(true);
       setError("");
 
-      const payload: any = {
+      const payload: Record<string, unknown> = {
         type,
         title,
         posterImage,
@@ -98,8 +98,8 @@ export default function AddContentModal() {
       setOpen(false);
       resetForm();
       router.refresh(); // Refresh to show new data
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "An unexpected error occurred");
     } finally {
       setLoading(false);
     }

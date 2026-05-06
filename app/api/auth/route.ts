@@ -20,9 +20,9 @@ export async function POST(request: Request) {
         const user = await User.create({ email, password });
 
         return NextResponse.json({ success: true, data: user }, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: error instanceof Error ? error.message : "An unexpected error occurred" },
             { status: 400 }
         );
     }

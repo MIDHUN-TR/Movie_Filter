@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Header from "./utilities/Header";
 
 export default function Page() {
   return (
