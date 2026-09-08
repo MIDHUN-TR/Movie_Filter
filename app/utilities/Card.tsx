@@ -163,11 +163,11 @@ export default function Card({
         setEditReleaseDate(releaseDate ? releaseDate.split("T")[0] : "");
         setEditRuntime(runtime?.toString() || "");
         setEditSeasonsList(seasons || []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         title, posterImage, originalLanguage,
         countryOfOrigin, watchingState, releaseDate, runtime,
-        numberOfSeasons, genres, cast, seasons,
-        genresKey, castKey, seasonsKey
+        numberOfSeasons, genresKey, castKey, seasonsKey
     ]);
 
     const handleEdit = async () => {
