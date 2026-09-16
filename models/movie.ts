@@ -36,7 +36,7 @@ const contentSchema = new Schema<IContent>(
         },
         posterImage: {
             type: String,
-            required: [true, "Poster image URL is required"],
+            default: "",
         },
         genres: {
             type: [String],

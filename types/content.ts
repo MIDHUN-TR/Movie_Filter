@@ -23,7 +23,7 @@ export interface ISeason {
 // TypeScript interface for Content (without mongoose Document)
 export interface IContentBase {
     title: string;
-    posterImage: string;
+    posterImage?: string;
     genres: string[];
     cast: string[];
     originalLanguage: string;

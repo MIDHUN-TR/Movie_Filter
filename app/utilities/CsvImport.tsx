@@ -366,14 +366,14 @@ export default function CsvImport() {
                                         </svg>
                                     </summary>
                                     <div className="px-4 pb-4 text-xs text-slate-500 space-y-2">
-                                        <p><strong className="text-slate-300">Required columns:</strong> title, type, posterImage, genres, originalLanguage, countryOfOrigin</p>
-                                        <p><strong className="text-slate-300">Optional:</strong> cast, watchingState, releaseDate, runtime, numberOfSeasons, seasonsData</p>
+                                        <p><strong className="text-slate-300">Required columns:</strong> title, type, genres, originalLanguage, countryOfOrigin</p>
+                                        <p><strong className="text-slate-300">Optional:</strong> posterImage, cast, watchingState, releaseDate, runtime, numberOfSeasons, seasonsData</p>
                                         <p><strong className="text-slate-300">Type values:</strong> movie, series, anime, tv</p>
                                         <p><strong className="text-slate-300">Seasons format:</strong> <code className="bg-white/10 px-1.5 py-0.5 rounded">Name:Episodes|Name:Episodes</code> or just <code className="bg-white/10 px-1.5 py-0.5 rounded">12|24|12</code></p>
                                         <p><strong className="text-slate-300">Example:</strong></p>
                                         <div className="bg-black/40 rounded-lg p-3 font-mono text-[10px] leading-relaxed overflow-x-auto">
-                                            title,type,posterImage,genres,cast,originalLanguage,countryOfOrigin,watchingState,seasonsData<br/>
-                                            Attack on Titan,anime,https://...,&quot;Action,Fantasy&quot;,&quot;Actor 1,Actor 2&quot;,Japanese,Japan,watching,&quot;Phantom Blood:25|Battle Tendency:24&quot;
+                                            title,type,genres,cast,originalLanguage,countryOfOrigin,watchingState,seasonsData<br/>
+                                            Attack on Titan,anime,&quot;Action,Fantasy&quot;,&quot;Actor 1,Actor 2&quot;,Japanese,Japan,watching,&quot;Phantom Blood:25|Battle Tendency:24&quot;
                                         </div>
                                     </div>
                                 </details>
