@@ -40,6 +40,7 @@ export default function CsvImport() {
     const [error, setError] = useState("");
     const [isDragging, setIsDragging] = useState(false);
     const [fileName, setFileName] = useState("");
+    const [rawCsvText, setRawCsvText] = useState("");
 
     // ─── Reset ──────────────────────────────────────────────────────────────
 
@@ -52,6 +53,7 @@ export default function CsvImport() {
         setError("");
         setIsDragging(false);
         setFileName("");
+        setRawCsvText("");
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
@@ -61,6 +63,46 @@ export default function CsvImport() {
     };
 
     // ─── File Processing ────────────────────────────────────────────────────
+
+    const processParsedItems = async (items: ParsedCSVItem[]) => {
+        setParsedItems(items);
+        setPhase("checking");
+
+        // Check for duplicates
+        const titles = items
+            .filter((i) => i.content.title && i.content.type)
+            .map((i) => ({
+                title: i.content.title!,
+                type: i.content.type!,
+            }));
+
+        try {
+            const res = await fetch("/api/import", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ titles }),
+            });
+            const data = await res.json();
+
+            if (data.success && data.duplicates) {
+                const dupSet = new Set(
+                    data.duplicates.map((d: string) => d.toLowerCase())
+                );
+                const updatedItems = items.map((item) => ({
+                    ...item,
+                    isDuplicate: dupSet.has(
+                        (item.content.title || "").toLowerCase()
+                    ),
+                }));
+                setParsedItems(updatedItems);
+            }
+        } catch {
+            // Duplicate check failed silently — proceed anyway
+            console.warn("Duplicate check failed, proceeding without.");
+        }
+
+        setPhase("parsed");
+    };
 
     const processFile = useCallback(
         async (file: File) => {
@@ -87,43 +129,7 @@ export default function CsvImport() {
                 }
 
                 const items = mapCSVToContent(rawRows);
-                setParsedItems(items);
-                setPhase("checking");
-
-                // Check for duplicates
-                const titles = items
-                    .filter((i) => i.content.title && i.content.type)
-                    .map((i) => ({
-                        title: i.content.title!,
-                        type: i.content.type!,
-                    }));
-
-                try {
-                    const res = await fetch("/api/import", {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ titles }),
-                    });
-                    const data = await res.json();
-
-                    if (data.success && data.duplicates) {
-                        const dupSet = new Set(
-                            data.duplicates.map((d: string) => d.toLowerCase())
-                        );
-                        const updatedItems = items.map((item) => ({
-                            ...item,
-                            isDuplicate: dupSet.has(
-                                (item.content.title || "").toLowerCase()
-                            ),
-                        }));
-                        setParsedItems(updatedItems);
-                    }
-                } catch {
-                    // Duplicate check failed silently — proceed anyway
-                    console.warn("Duplicate check failed, proceeding without.");
-                }
-
-                setPhase("parsed");
+                await processParsedItems(items);
             } catch (err: unknown) {
                 const msg =
                     err instanceof Error ? err.message : "Failed to parse CSV";
@@ -131,6 +137,35 @@ export default function CsvImport() {
             }
         },
         [encoding]
+    );
+
+    const processRawText = useCallback(
+        async (text: string) => {
+            setError("");
+            setFileName("Pasted Data");
+
+            if (!text.trim()) {
+                setError("Please paste some CSV data");
+                return;
+            }
+
+            try {
+                const rawRows = parseCSVText(text);
+
+                if (rawRows.length === 0) {
+                    setError("No data found in the provided text. Check format & headers.");
+                    return;
+                }
+
+                const items = mapCSVToContent(rawRows);
+                await processParsedItems(items);
+            } catch (err: unknown) {
+                const msg =
+                    err instanceof Error ? err.message : "Failed to parse CSV text";
+                setError(msg);
+            }
+        },
+        []
     );
 
     // ─── Drag & Drop ────────────────────────────────────────────────────────
@@ -352,6 +387,32 @@ export default function CsvImport() {
                                     className="hidden"
                                 />
 
+                                <div className="flex items-center gap-4 py-2">
+                                    <div className="h-px bg-white/10 flex-1" />
+                                    <span className="text-xs text-slate-500 font-medium">OR</span>
+                                    <div className="h-px bg-white/10 flex-1" />
+                                </div>
+                                
+                                {/* Raw Text Input */}
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-sm text-slate-400">Paste CSV Data:</label>
+                                    <textarea
+                                        value={rawCsvText}
+                                        onChange={(e) => setRawCsvText(e.target.value)}
+                                        placeholder="title,type,genres,originalLanguage,countryOfOrigin&#10;Attack on Titan,anime,&quot;Action,Fantasy&quot;,Japanese,Japan"
+                                        className="w-full h-32 rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white font-mono placeholder:text-slate-600 outline-none transition-all focus:border-[#3A0CA3]/50 focus:ring-1 focus:ring-[#3A0CA3]/50"
+                                    />
+                                    <div className="flex justify-end">
+                                        <button 
+                                            onClick={() => processRawText(rawCsvText)}
+                                            disabled={!rawCsvText.trim()}
+                                            className="rounded-xl bg-[#3A0CA3] px-6 py-2 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:bg-[#3A0CA3]/80 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            Process Text
+                                        </button>
+                                    </div>
+                                </div>
+
                                 {/* CSV Format Guide */}
                                 <details className="group rounded-xl border border-white/5 bg-white/[0.02]">
                                     <summary className="flex items-center justify-between cursor-pointer px-4 py-3 text-sm text-slate-400 hover:text-slate-300 transition-colors">
@@ -366,14 +427,14 @@ export default function CsvImport() {
                                         </svg>
                                     </summary>
                                     <div className="px-4 pb-4 text-xs text-slate-500 space-y-2">
-                                        <p><strong className="text-slate-300">Required columns:</strong> title, type, posterImage, genres, originalLanguage, countryOfOrigin</p>
-                                        <p><strong className="text-slate-300">Optional:</strong> cast, watchingState, releaseDate, runtime, numberOfSeasons, seasonsData</p>
+                                        <p><strong className="text-slate-300">Required columns:</strong> title, type, genres, originalLanguage, countryOfOrigin</p>
+                                        <p><strong className="text-slate-300">Optional:</strong> posterImage, cast, watchingState, releaseDate, runtime, numberOfSeasons, seasonsData</p>
                                         <p><strong className="text-slate-300">Type values:</strong> movie, series, anime, tv</p>
                                         <p><strong className="text-slate-300">Seasons format:</strong> <code className="bg-white/10 px-1.5 py-0.5 rounded">Name:Episodes|Name:Episodes</code> or just <code className="bg-white/10 px-1.5 py-0.5 rounded">12|24|12</code></p>
                                         <p><strong className="text-slate-300">Example:</strong></p>
                                         <div className="bg-black/40 rounded-lg p-3 font-mono text-[10px] leading-relaxed overflow-x-auto">
-                                            title,type,posterImage,genres,cast,originalLanguage,countryOfOrigin,watchingState,seasonsData<br/>
-                                            Attack on Titan,anime,https://...,&quot;Action,Fantasy&quot;,&quot;Actor 1,Actor 2&quot;,Japanese,Japan,watching,&quot;Phantom Blood:25|Battle Tendency:24&quot;
+                                            title,type,genres,cast,originalLanguage,countryOfOrigin,watchingState,seasonsData<br/>
+                                            Attack on Titan,anime,&quot;Action,Fantasy&quot;,&quot;Actor 1,Actor 2&quot;,Japanese,Japan,watching,&quot;Phantom Blood:25|Battle Tendency:24&quot;
                                         </div>
                                     </div>
                                 </details>

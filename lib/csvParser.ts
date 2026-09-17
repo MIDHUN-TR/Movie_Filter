@@ -395,7 +395,7 @@ export function mapCSVToContent(
             watchingState: parseWatchingState(resolved.watchingstate || "pending"),
         };
 
-        if (!content.posterImage) errors.push("Missing poster image");
+
         if (!content.genres || content.genres.length === 0) errors.push("Missing genres");
         if (!content.originalLanguage) errors.push("Missing original language");
         if (!content.countryOfOrigin) errors.push("Missing country of origin");
